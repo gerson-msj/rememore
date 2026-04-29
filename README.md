@@ -4,15 +4,31 @@ Organizador de memórias pessoais
 
 ## Histórico
 
-| Data  | Horas | Versão |
-| :---: | :---: | :----- |
-| 28/04 | 01:00 | 0.0    |
+| Data  | Horas | Versão       |
+| :---: | :---: | :----------- |
+| 28/04 | 01:00 | 0.0          |
+| 28/04 | 01:00 | 0.1 - Layout |
+| 29/04 | 01:00 | 0.1 - Layout |
 
 ## Versionamento
 
 > Fase **BETA** - 001 Hora
 
-### 0.0
+- Preview: https://rememore-g918ctctsd6d.gerson-msj.deno.net/
+- Branch: https://rememore--main.gerson-msj.deno.net/
+- Prod: https://rememore.gerson-msj.deno.net/
+
+### 0.1 - 2h
+
+Criação de Memórias e funcionalidades
+
+- Seletor de data
+- Ponto de entrada da memória
+- Lista de memórias
+- Inclusão e exclusão de memória
+- Persistência local (indexedDB)
+
+### 0.0 - 1h
 
 - Criação da estrutura do projeto Deno Fresh
 - Inclusão do Bulma CSS

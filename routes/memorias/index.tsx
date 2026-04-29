@@ -1,7 +1,7 @@
-import Home from "@/islands/home.tsx"
-import { define } from "../utils.ts"
+import { define } from "@/utils.ts"
+import MemoriasHome from "@/islands/memorias-home.tsx"
 
-export default define.page(() => <Home />)
+export default define.page(() => <MemoriasHome />)
 
 export const handler = define.handlers({
     GET(ctx) {

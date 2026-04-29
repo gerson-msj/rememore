@@ -1,1 +1,15 @@
+.is-placeholder {
+    color: var(--bulma-input-placeholder-color) !important;
+}
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+input[type="date"] {
+    color-scheme: dark;
+}
+
+.textarea {
+    --bulma-textarea-min-height: 6em;
+}
