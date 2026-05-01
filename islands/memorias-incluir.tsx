@@ -53,7 +53,7 @@ export default function MemoriasIncluir(props: MemoriaData) {
         memoriaRef.current?.focus()
 
         if (bodyRef.current !== null && headRef.current !== null) {
-            bodyRef.current.parentElement!.style.top = `${headRef.current.clientHeight + 3}px`
+            bodyRef.current.style.top = `${headRef.current.clientHeight + 3}px`
         }
     }, [props])
 
@@ -98,8 +98,8 @@ export default function MemoriasIncluir(props: MemoriaData) {
                 </div>
             </div>
 
-            <div class="container p-0 pr-3 pl-3">
-                <div class="container p-3 m-0 has-background-black-ter has-radius-normal" ref={bodyRef}>
+            <div class="container p-0 pr-3 pl-3" ref={bodyRef}>
+                <div class="container p-3 m-0 has-background-black-ter has-radius-normal">
                     {models.value.map((model, index) => (
                         <div class="field is-grouped is-align-items-center notification is-dark p-2">
                             <div class="control is-expanded pl-2">
