@@ -27,6 +27,22 @@ input[type="date"] {
     box-shadow: 0 3px 3px var(--bulma-scheme-main);
 }
 
+/* Sobrescreve o alinhamento padrão da modal para o topo */
+.modal {
+    justify-content: flex-start;
+}
+
+/* Adiciona o recuo de 100px apenas no conteúdo da modal */
+.modal-content,
+.modal-card {
+    margin-top: 100px;
+}
+
+/* Preserva quebras de linha e espaços em branco */
+.is-pre-wrap {
+    white-space: pre-wrap;
+}
+
 /* 
 :root {
     --header-height: 80px;

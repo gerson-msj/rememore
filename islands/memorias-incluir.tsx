@@ -3,6 +3,7 @@ import { Memoria, MemoriaData } from "@/app/domain/memoria.ts"
 import { DateService } from "@/app/services/date-service.ts"
 import { useEffect, useRef } from "preact/hooks"
 import { scrollDown } from "@/app/services/page-service.ts"
+import { Message, MessageController } from "@/components/message.tsx"
 
 export default function MemoriasIncluir(props: MemoriaData) {
     const data = props.data ?? DateService.dataLocal_ISOString()
@@ -12,6 +13,8 @@ export default function MemoriasIncluir(props: MemoriaData) {
     const memoriaRef = useRef<HTMLTextAreaElement>(null)
     const headRef = useRef<HTMLDivElement>(null)
     const bodyRef = useRef<HTMLDivElement>(null)
+    const messageRef = useRef(new MessageController())
+    const message = messageRef.current
 
     const incluir = () => {
         const value: Memoria = { ...model.peek() }
@@ -30,7 +33,17 @@ export default function MemoriasIncluir(props: MemoriaData) {
         scrollDown()
     }
 
-    const remover = (index: number) => {
+    const remover = async (index: number) => {
+        const value = models.peek()[index]
+
+        const messageResult = await message.open({
+            header: "Deseja mesmo remover esta memória?",
+            body: value.memoria,
+            type: "okCancel"
+        })
+
+        if (messageResult === "cancel") return
+
         const values = [...models.peek()]
         const newValues = [
             ...values.slice(0, index),
@@ -42,7 +55,7 @@ export default function MemoriasIncluir(props: MemoriaData) {
     }
 
     useEffect(() => {
-        for (let index = 0; index < 50; index++) {
+        for (let index = 0; index < 0; index++) {
             models.value = [...models.value, {
                 data,
                 memoria: `${index + 1}`,
@@ -58,65 +71,76 @@ export default function MemoriasIncluir(props: MemoriaData) {
     }, [props])
 
     return (
-        <div class="container">
-            <div class="container is-fixed p-3" ref={headRef}>
-                <p class="title is-3 mt-2 has-text-link-light">Memórias de {DateService.dataFormatada(data)}</p>
+        <>
+            <div class="container">
+                <div class="container is-fixed p-3" ref={headRef}>
+                    <p class="title is-3 mt-2 has-text-link-light">Memórias de {DateService.dataFormatada(data)}</p>
 
-                <button type="button" class="button mb-5" onClick={() => globalThis.location.href = "/memorias"}>
-                    Voltar
-                </button>
+                    <button type="button" class="button mb-5" onClick={() => globalThis.location.href = "/memorias"}>
+                        Voltar
+                    </button>
 
-                <div class="field is-grouped is-align-items-end">
-                    <div class="control is-expanded">
-                        <label class="label">Memória</label>
-                        <div class="control">
-                            <textarea
-                                class="textarea has-fixed-size"
-                                placeholder="Descreva uma memória desta data."
-                                value={model.value.memoria}
-                                onInput={({ currentTarget: { value } }) => model.value = { ...model.value, memoria: value }}
-                                ref={memoriaRef}
-                                onKeyDown={(event) => {
-                                    if (event.ctrlKey && event.key === "Enter") {
-                                        incluir()
-                                        event.preventDefault()
-                                    }
-                                }}
-                            >
-                            </textarea>
-                        </div>
-                    </div>
-                    <div class="control">
-                        <div class="buttons has-addons is-right">
-                            <button type="button" class="button" onClick={() => incluir()}>
-                                <span class="icon is-small">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container p-0 pr-3 pl-3" ref={bodyRef}>
-                <div class="container p-3 m-0 has-background-black-ter has-radius-normal">
-                    {models.value.map((model, index) => (
-                        <div class="field is-grouped is-align-items-center notification is-dark p-2">
-                            <div class="control is-expanded pl-2">
-                                {model.memoria} - {model.ordem}
+                    <div class="field is-grouped is-align-items-end">
+                        <div class="control is-expanded">
+                            <label class="label">Memória</label>
+                            <div class="control">
+                                <textarea
+                                    class="textarea has-fixed-size"
+                                    placeholder="Descreva uma memória desta data."
+                                    value={model.value.memoria}
+                                    onInput={({ currentTarget: { value } }) => model.value = { ...model.value, memoria: value }}
+                                    ref={memoriaRef}
+                                    onKeyDown={(event) => {
+                                        if (event.ctrlKey && event.key === "Enter") {
+                                            incluir()
+                                            event.preventDefault()
+                                        }
+                                    }}
+                                >
+                                </textarea>
                             </div>
-
+                        </div>
+                        <div class="control">
                             <div class="buttons has-addons is-right">
-                                <button type="button" class="button" onClick={() => remover(index)}>
+                                <button type="button" class="button" onClick={() => incluir()}>
                                     <span class="icon is-small">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-plus"></i>
                                     </span>
                                 </button>
                             </div>
                         </div>
-                    ))}
+                    </div>
+                </div>
+
+                <div class="container p-0 pr-3 pl-3" ref={bodyRef}>
+                    {models.value.length > 0 && (
+                        <div class="container p-3 m-0 has-background-black-ter has-radius-normal">
+                            {models.value.map((model, index) => (
+                                <div class="field is-grouped is-align-items-center notification is-dark p-2" key={index}>
+                                    <div class="control is-expanded pl-2 is-pre-wrap">
+                                        {model.memoria}
+                                    </div>
+
+                                    <div class="buttons has-addons is-right">
+                                        <button
+                                            type="button"
+                                            class="button"
+                                            onClick={() =>
+                                                remover(index)}
+                                        >
+                                            <span class="icon is-small">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>
+
+            <Message controller={message} />
+        </>
     )
 }
