@@ -13,3 +13,12 @@ export function handleError(error: unknown): ErrorData {
     console.error(unexpectedError)
     return { ...unexpectedError }
 }
+
+export function scrollDown() {
+    setTimeout(() => {
+        globalThis.scrollTo({
+            top: globalThis.document.documentElement.scrollHeight,
+            behavior: "smooth"
+        })
+    }, 0)
+}

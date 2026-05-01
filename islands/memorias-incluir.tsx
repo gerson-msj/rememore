@@ -2,27 +2,16 @@ import { useSignal } from "@preact/signals"
 import { Memoria, MemoriaData } from "@/app/domain/memoria.ts"
 import { DateService } from "@/app/services/date-service.ts"
 import { useEffect, useRef } from "preact/hooks"
+import { scrollDown } from "@/app/services/page-service.ts"
 
 export default function MemoriasIncluir(props: MemoriaData) {
     const data = props.data ?? DateService.dataLocal_ISOString()
     const model = useSignal(new Memoria())
-    const models = useSignal(
-        props.memorias ?? [
-            { data, memoria: "Teste 1", ordem: 1 },
-            { data, memoria: "Teste 2", ordem: 2 },
-            { data, memoria: "Teste 3", ordem: 3 },
-            { data, memoria: "Teste 4", ordem: 4 },
-            { data, memoria: "Teste 5", ordem: 5 },
-            { data, memoria: "Teste 6", ordem: 6 },
-            { data, memoria: "Teste 7", ordem: 7 },
-            { data, memoria: "Teste 8", ordem: 8 },
-            { data, memoria: "Teste 9", ordem: 9 },
-            { data, memoria: "Teste 10", ordem: 10 }
-        ]
-    )
+    const models = useSignal(props.memorias ?? [])
 
     const memoriaRef = useRef<HTMLTextAreaElement>(null)
-    const memoriasRef = useRef<HTMLDivElement>(null)
+    const headRef = useRef<HTMLDivElement>(null)
+    const bodyRef = useRef<HTMLDivElement>(null)
 
     const incluir = () => {
         const value: Memoria = { ...model.peek() }
@@ -37,10 +26,8 @@ export default function MemoriasIncluir(props: MemoriaData) {
         ]
         model.value = { ...model.value, memoria: "" }
 
-        setTimeout(() => {
-            memoriaRef.current?.focus()
-            memoriasRef.current?.scrollTo({ top: memoriasRef.current?.scrollHeight, behavior: "smooth" })
-        }, 0)
+        memoriaRef.current?.focus()
+        scrollDown()
     }
 
     const remover = (index: number) => {
@@ -55,12 +42,24 @@ export default function MemoriasIncluir(props: MemoriaData) {
     }
 
     useEffect(() => {
+        for (let index = 0; index < 15; index++) {
+            models.value = [...models.value, {
+                data,
+                memoria: `${index + 1}`,
+                ordem: index + 1
+            }]
+        }
+
         memoriaRef.current?.focus()
+
+        if (bodyRef.current !== null && headRef.current !== null) {
+            bodyRef.current.style.top = `${headRef.current.clientHeight + 4}px`
+        }
     }, [props])
 
     return (
-        <div class="container hero p-3 is-fullheight">
-            <div class="hero-head">
+        <div class="container">
+            <div class="container is-fixed pb-3" ref={headRef}>
                 <p class="title is-3">Memórias de {DateService.dataFormatada(data)}</p>
 
                 <button type="button" class="button mb-5" onClick={() => globalThis.location.href = "/memorias"}>
@@ -98,28 +97,26 @@ export default function MemoriasIncluir(props: MemoriaData) {
                     </div>
                 </div>
             </div>
-            <div class="hero-body has-background-light p-0" style="align-items: stretch; display: flex; flex-direction: column;">
-                <div
-                    class="block memory-list p-3 has-background-black-ter has-radius-normal m-0 is-flex-grow-1"
-                    style="overflow-y: auto;"
-                    ref={memoriasRef}
-                >
-                    {models.value.map((model, index) => (
-                        <div class="field is-grouped is-align-items-center notification is-dark p-2">
-                            <div class="control is-expanded pl-2">
-                                {model.memoria} - {model.ordem}
-                            </div>
 
-                            <div class="buttons has-addons is-right">
-                                <button type="button" class="button" onClick={() => remover(index)}>
-                                    <span class="icon is-small">
-                                        <i class="fas fa-trash"></i>
-                                    </span>
-                                </button>
-                            </div>
+            <div
+                class="container p-3 has-background-black-ter has-radius-normal"
+                ref={bodyRef}
+            >
+                {models.value.map((model, index) => (
+                    <div class="field is-grouped is-align-items-center notification is-dark p-2">
+                        <div class="control is-expanded pl-2">
+                            {model.memoria} - {model.ordem}
                         </div>
-                    ))}
-                </div>
+
+                        <div class="buttons has-addons is-right">
+                            <button type="button" class="button" onClick={() => remover(index)}>
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     )

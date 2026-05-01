@@ -14,25 +14,17 @@ input[type="date"] {
     --bulma-textarea-min-height: 6em;
 }
 
-.memory-list {}
-
-.has-overfow-y {
-    overflow-y: auto;
-}
-
-.has-scrool {
-    scrollbar-color: var(--bulma-link) transparent;
-    scrollbar-width: thin;
-}
-
-.layout-list {
-    display: grid;
+:root {
+    scrollbar-color: var(--bulma-dark) var(--bulma-black-ter);
+    /* scrollbar-width: thin; */
 }
 
 .is-fixed {
     position: fixed;
     top: 0;
-    left: 0;
+    z-index: 1;
+    background-color: var(--bulma-scheme-main);
+    box-shadow: 0 3px 3px var(--bulma-scheme-main);
 }
 
 /* 
