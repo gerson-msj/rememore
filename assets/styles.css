@@ -13,3 +13,57 @@ input[type="date"] {
 .textarea {
     --bulma-textarea-min-height: 6em;
 }
+
+.memory-list {}
+
+.has-overfow-y {
+    overflow-y: auto;
+}
+
+.has-scrool {
+    scrollbar-color: var(--bulma-link) transparent;
+    scrollbar-width: thin;
+}
+
+.layout-list {
+    display: grid;
+}
+
+.is-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* 
+:root {
+    --header-height: 80px;
+    --footer-height: 20px;
+    --main-height: calc(100vh - var(--header-height) - var(--footer-height));
+}xx
+
+body {
+    display: grid;
+    grid-template-rows: var(--header-height) auto var(--footer-height);
+    height: 100vh;
+    margin: 0;
+    gap: 0;
+}
+
+header {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+main {
+    padding: 10px;
+}
+
+footer {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    font-size: small;
+    padding-right: 5px;
+} */
