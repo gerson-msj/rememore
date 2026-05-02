@@ -101,8 +101,6 @@ export default function MemoriasIncluir(props: MemoriaData) {
             })
             globalThis.location.href = "/memorias"
         }
-
-        await message.open({ header: "Teste" })
     }
 
     return (
