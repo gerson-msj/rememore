@@ -4,33 +4,43 @@ import { DateService } from "@/app/services/date-service.ts"
 import { useEffect, useRef } from "preact/hooks"
 import { scrollDown } from "@/app/services/page-service.ts"
 import { Message, MessageController } from "@/components/message.tsx"
+import MemoriaIDBRepository from "@/app/data-context/idb/memoria-idb-repository.ts"
 
 export default function MemoriasIncluir(props: MemoriaData) {
     const data = props.data ?? DateService.dataLocal_ISOString()
     const model = useSignal(new Memoria())
-    const models = useSignal(props.memorias ?? [])
+    const models = useSignal<Memoria[]>([])
 
     const memoriaRef = useRef<HTMLTextAreaElement>(null)
     const headRef = useRef<HTMLDivElement>(null)
     const bodyRef = useRef<HTMLDivElement>(null)
     const messageRef = useRef(new MessageController())
-    const message = messageRef.current
+    const memoriaRepositoryRef = useRef(new MemoriaIDBRepository())
 
-    const incluir = () => {
+    const message = messageRef.current
+    const memoriaRepository = memoriaRepositoryRef.current
+
+    const incluir = async () => {
         const value: Memoria = { ...model.peek() }
         if (value.memoria.trim() === "") return
 
         const values = [...models.peek()]
         value.data = data
         value.ordem = values.length === 0 ? 1 : Math.max(...values.map((v) => v.ordem)) + 1
-        models.value = [
-            ...models.value,
-            value
-        ]
-        model.value = { ...model.value, memoria: "" }
 
-        memoriaRef.current?.focus()
-        scrollDown()
+        try {
+            const newModels = [...models.peek(), value]
+            await memoriaRepository.add(data, newModels)
+
+            models.value = newModels
+            model.value = { ...model.value, memoria: "" }
+            scrollDown()
+        } catch (error) {
+            console.error("Erro ao incluir memória:", error)
+            await message.open({ header: "Erro ao incluir a memória.", type: "is-danger" })
+        } finally {
+            memoriaRef.current?.focus()
+        }
     }
 
     const remover = async (index: number) => {
@@ -39,7 +49,7 @@ export default function MemoriasIncluir(props: MemoriaData) {
         const messageResult = await message.open({
             header: "Deseja mesmo remover esta memória?",
             body: value.memoria,
-            type: "okCancel"
+            buttons: "okCancel"
         })
 
         if (messageResult === "cancel") return
@@ -49,26 +59,51 @@ export default function MemoriasIncluir(props: MemoriaData) {
             ...values.slice(0, index),
             ...values.slice(index + 1)
         ]
-        let ordem = 0
-        newValues.forEach((v) => v.ordem = ++ordem)
-        models.value = [...newValues]
+        const finalValues = newValues.map((v, i) => ({ ...v, ordem: i + 1 }))
+
+        try {
+            await memoriaRepository.add(data, finalValues)
+            models.value = finalValues
+        } catch (error) {
+            console.error("Erro ao remover memória:", error)
+            await message.open({ header: "Erro ao remover a memória.", type: "is-danger" })
+        }
     }
 
     useEffect(() => {
-        for (let index = 0; index < 0; index++) {
-            models.value = [...models.value, {
-                data,
-                memoria: `${index + 1}`,
-                ordem: index + 1
-            }]
-        }
-
         memoriaRef.current?.focus()
-
         if (bodyRef.current !== null && headRef.current !== null) {
             bodyRef.current.style.top = `${headRef.current.clientHeight + 3}px`
         }
+        loadValues()
     }, [props])
+
+    const loadValues = async () => {
+        const memorias = props.memorias ?? []
+        try {
+            if (memorias.length === 0) {
+                models.value = await memoriaRepository.getAll(data)
+            } else {
+                const memoriasExistentes = await memoriaRepository.getAll(data)
+                if (memoriasExistentes.length > 0) {
+                    models.value = memoriasExistentes
+                } else {
+                    await memoriaRepository.add(data, memorias)
+                    models.value = memorias
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao carregar memórias:", error)
+            await message.open({
+                header: "Erro ao carregar as memórias.",
+                body: "Não foi possível manter as memórias neste navegador.",
+                type: "is-danger"
+            })
+            globalThis.location.href = "/memorias"
+        }
+
+        await message.open({ header: "Teste" })
+    }
 
     return (
         <>

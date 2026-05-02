@@ -7,7 +7,8 @@ type MessageResult = "ok" | "cancel"
 interface IMessageOptions {
     header?: string
     body?: string
-    type?: "ok" | "okCancel" | "cancel" | "none"
+    buttons?: "ok" | "okCancel" | "cancel" | "none"
+    type?: "is-danger"
 }
 
 interface IMessageData {
@@ -54,8 +55,11 @@ export function Message(props: IMessageProps) {
 
     const messageHeader = options.header ?? options.body
     const messageBody = options.header === undefined && options.body !== undefined ? undefined : options.body
-    const showOk = options.type === "ok" || options.type === "okCancel"
-    const showCancel = options.type === "cancel" || options.type === "okCancel"
+
+    const messageType = options.type ?? ""
+    const showOk = options.buttons === "ok" || options.buttons === "okCancel"
+    const showCancel = options.buttons === "cancel" || options.buttons === "okCancel"
+    const showDelete = options.buttons === "none" || options.buttons === undefined
 
     useEffect(() => {
         return () => {
@@ -64,12 +68,15 @@ export function Message(props: IMessageProps) {
     }, [])
 
     return (
-        <div class={` modal ${controller.isActive ? "is-active" : ""}`}>
+        <div class={`modal ${controller.isActive ? "is-active" : ""} p-3`}>
             <div class="modal-background is-clickable" onClick={() => controller.close("cancel")}></div>
             <div class="modal-content">
-                <div class="message ">
+                <div class={`message ${messageType}`}>
                     <div class="message-header">
                         <p>{messageHeader}</p>
+                        {showDelete && (
+                            <button type="button" class="delete" aria-label="delete" onClick={() => controller.close("cancel")}></button>
+                        )}
                     </div>
 
                     <div class="message-body">

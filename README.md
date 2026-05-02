@@ -4,14 +4,15 @@ Organizador de memórias pessoais
 
 ## Histórico
 
-| Data  | Horas | Versão       |
-| :---: | :---: | :----------- |
-| 28/04 | 01:00 | 0.0          |
-| 28/04 | 01:00 | 0.1 - Layout |
-| 29/04 | 01:00 | 0.1 - Layout |
-| 30/04 | 05:00 | 0.1 - Layout |
-| 01/05 | 02:00 | 0.1 - Layout |
-| 01/05 | 02:00 | 0.1 - Layout |
+| Data  | Horas | Versão | Atividade            |
+| :---: | :---: | :----: | :------------------- |
+| 28/04 | 01:00 |  0.0   | Criação do projeto   |
+| 28/04 | 01:00 |  0.1   | Componente de data   |
+| 29/04 | 01:00 |        | Listagem de memórias |
+| 30/04 | 05:00 |        | Layout               |
+| 01/05 | 02:00 |        | Layout               |
+| 01/05 | 02:00 |        | Message Box          |
+| 02/05 | 04:00 |        | Indexed DB           |
 
 ## Versionamento
 
@@ -21,7 +22,11 @@ Organizador de memórias pessoais
 - Branch: https://rememore--main.gerson-msj.deno.net/
 - Prod: https://rememore.gerson-msj.deno.net/
 
-### 0.1 - 11h
+### 0.2
+
+Próxima etapa a planejar
+
+### 0.1 - 15h
 
 Criação de Memórias e funcionalidades
 
@@ -33,6 +38,7 @@ Criação de Memórias e funcionalidades
 - Alinhamento de campos
 - Rolagem de página com header fixo (2h)
 - MessageBox (2h)
+- Indexed DB (4h)
 
 ### 0.0 - 1h
 
@@ -41,3 +47,7 @@ Criação de Memórias e funcionalidades
 - Criação do repositório GIT
 - Criação da branch develop
 - Criação do deno deploy (main)
+
+### Planejamento - Dias
+
+- Etapa de concepção da ideia
