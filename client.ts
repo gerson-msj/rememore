@@ -1,2 +1,2 @@
-import "./assets/styles.css"
 import "./assets/bulma.css"
+import "./assets/styles.css"
