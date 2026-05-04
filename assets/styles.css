@@ -43,6 +43,10 @@ input[type="date"] {
     white-space: pre-wrap;
 }
 
+.notification {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
 /* 
 :root {
     --header-height: 80px;
