@@ -11,7 +11,11 @@ input[type="date"] {
 }
 
 .textarea {
-    --bulma-textarea-min-height: 5em;
+    --bulma-textarea-min-height: 6em;
+}
+
+.textarea-btns {
+    height: 6em;
 }
 
 :root {

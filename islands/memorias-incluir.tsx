@@ -11,6 +11,7 @@ export default function MemoriasIncluir(props: MemoriaData) {
     const model = useSignal(new Memoria())
     const models = useSignal<Memoria[]>([])
     const editIndex = useSignal<number | undefined>(undefined)
+    const scrollInit = useSignal<number | undefined>(undefined)
     const hasChange = useSignal(false)
 
     const memoriaRef = useRef<HTMLTextAreaElement>(null)
@@ -97,6 +98,7 @@ export default function MemoriasIncluir(props: MemoriaData) {
 
     const editar = (index: number) => {
         editIndex.value = index
+        scrollInit.value = globalThis.scrollY
         const selected = models.peek()[index]
         model.value = { ...selected }
         memoriaRef.current?.focus()
@@ -117,6 +119,9 @@ export default function MemoriasIncluir(props: MemoriaData) {
         model.value = new Memoria()
         models.value = await memoriaRepository.getAll(data)
         memoriaRef.current?.focus()
+        requestAnimationFrame(() => {
+            globalThis.scrollTo({ top: scrollInit.value, behavior: "smooth" })
+        })
     }
 
     const getEditRef = (index: number) => {
@@ -248,8 +253,8 @@ export default function MemoriasIncluir(props: MemoriaData) {
                                 </textarea>
                             </div>
                         </div>
-                        <div class="control">
-                            <div class="buttons has-addons is-right">
+                        <div class="control textarea-btns is-align-content-center">
+                            <div class="buttons has-addons">
                                 <button
                                     type="button"
                                     class="button"
@@ -275,6 +280,22 @@ export default function MemoriasIncluir(props: MemoriaData) {
                                         <button
                                             type="button"
                                             class="button"
+                                            onClick={() => remover()}
+                                            title="Excluir"
+                                        >
+                                            <span class="icon is-small">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                            {isEdit && (
+                                <>
+                                    <div class="buttons has-addons is-justify-content-center">
+                                        <button
+                                            type="button"
+                                            class="button"
                                             disabled={editIndex.value === 0}
                                             onClick={() => up()}
                                             title="Mover para cima"
@@ -294,19 +315,9 @@ export default function MemoriasIncluir(props: MemoriaData) {
                                                 <i class="fas fa-angle-down"></i>
                                             </span>
                                         </button>
-                                        <button
-                                            type="button"
-                                            class="button"
-                                            onClick={() => remover()}
-                                            title="Excluir"
-                                        >
-                                            <span class="icon is-small">
-                                                <i class="fas fa-trash"></i>
-                                            </span>
-                                        </button>
-                                    </>
-                                )}
-                            </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

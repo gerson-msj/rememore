@@ -15,17 +15,34 @@ Organizador de memórias pessoais
 | 02/05 | 04:00 |        | Indexed DB           |
 | 04/05 | 03:00 |  0.2   | Edição e ordenação   |
 | 04/05 | 01:00 |        | Refinamento de UX    |
+| 04/05 | 01:00 |        | Ajustes de scroll    |
 
 ## Versionamento
 
-> Fase **BETA** - 20 Horas
+> Fase **BETA** - 21 Horas
 
 - Deno Deploy: https://console.deno.com/gerson-msj/livros
 - Preview: https://rememore-g918ctctsd6d.gerson-msj.deno.net/
 - Branch: https://rememore--main.gerson-msj.deno.net/
 - Prod: https://rememore.gerson-msj.deno.net/
 
-### 0.2 - 4h
+### 0.3 - 0h
+
+Cadastro, categorização e revisão
+
+- Navegação de etapas (cadastro, categorização e revisão)
+- Interface de categorização
+- Interface de revisão
+- Listagem de categorias
+- Armazenamento local de categorias
+- Inclusão local de categorias
+- Filtro de categorias
+- Seleção de categoria
+- Modificação dos domains de memória para incluir categoria
+- Modificar memorias/incluir para memorias/cadastrar
+- criar memorias/categorizar e memorias/revisar
+
+### 0.2 - 5h
 
 Edição de memórias
 
