@@ -13,7 +13,7 @@ export class Memoria implements IMemoria {
 }
 
 export class MemoriaData {
-    data?: string
+    data: string = ""
     memorias?: Memoria[]
     error?: ErrorData
 }

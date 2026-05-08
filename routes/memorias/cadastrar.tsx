@@ -1,8 +1,8 @@
 import { define } from "@/utils.ts"
 import { MemoriaData } from "@/app/domain/memoria.ts"
-import MemoriasIncluir from "@/islands/memorias-incluir.tsx"
+import Cadastrar from "@/islands/memorias/cadastrar.tsx"
 
-export default define.page<typeof handler>((props) => <MemoriasIncluir {...props.data} />)
+export default define.page<typeof handler>((props) => <Cadastrar {...props.data} />)
 
 export const handler = define.handlers<MemoriaData>({
     GET() {

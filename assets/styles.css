@@ -31,6 +31,14 @@ input[type="date"] {
     box-shadow: 0 3px 3px var(--bulma-scheme-main);
 }
 
+.is-fixed-sub {
+    position: fixed;
+    top: 0;
+    z-index: 9;
+    background-color: var(--bulma-scheme-main);
+    box-shadow: 0 3px 3px var(--bulma-scheme-main);
+}
+
 /* Sobrescreve o alinhamento padrão da modal para o topo */
 .modal {
     justify-content: flex-start;
@@ -49,6 +57,14 @@ input[type="date"] {
 
 .notification {
     transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.icon-btn {
+    transition: color 0.2s ease;
+}
+
+.icon-btn:hover {
+    color: hsl(var(--bulma-link-h), var(--bulma-link-s), var(--bulma-link-80-l)) !important;
 }
 
 /* 

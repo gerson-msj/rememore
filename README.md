@@ -16,17 +16,19 @@ Organizador de memórias pessoais
 | 04/05 | 03:00 |  0.2   | Edição e ordenação   |
 | 04/05 | 01:00 |        | Refinamento de UX    |
 | 04/05 | 01:00 |        | Ajustes de scroll    |
+| 05/05 | 03:00 |  0.3   | Estrutura            |
+| 06/05 | 05:00 |        | Estrutura            |
 
 ## Versionamento
 
-> Fase **BETA** - 21 Horas
+> Fase **BETA** - 29 Horas
 
 - Deno Deploy: https://console.deno.com/gerson-msj/livros
 - Preview: https://rememore-g918ctctsd6d.gerson-msj.deno.net/
 - Branch: https://rememore--main.gerson-msj.deno.net/
 - Prod: https://rememore.gerson-msj.deno.net/
 
-### 0.3 - 0h
+### 0.3 - 8h
 
 Cadastro, categorização e revisão
 
