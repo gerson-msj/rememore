@@ -1,37 +1,31 @@
 import { useEffect, useRef } from "preact/hooks"
-import { useSignal } from "@preact/signals"
-import MemoriaTitle from "@/components/memorias/title.tsx"
-import MemoriaTabs from "@/components/memorias/tabs.tsx"
-import { getStorageDate } from "@/app/services/memoria-page-service.ts"
+import { Signal } from "@preact/signals"
+import { RefObject } from "preact"
+import { Memoria } from "@/app/domain/memoria.ts"
 
-export default function Revisar() {
-    const data = useSignal<string>("")
+interface RevisarProps {
+    data: string
+    memorias: Signal<Memoria[]>
+    parentHeaderRef: RefObject<HTMLDivElement>
+}
 
-    const headRef = useRef<HTMLDivElement>(null)
+export default function Revisar(props: RevisarProps) {
+    const { data, parentHeaderRef } = props
 
-    const voltar = () => {
-        globalThis.location.href = "/memorias"
-    }
+    const bodyRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        data.value = getStorageDate() ?? ""
-        if (data.value === "") {
-            voltar()
+        if (bodyRef.current !== null && parentHeaderRef.current !== null) {
+            const bodyTop = parentHeaderRef.current.clientHeight
+            bodyRef.current.style.top = `${bodyTop + 3}px`
         }
     }, [])
 
     return (
         <>
-            {data.value !== "" && (
-                <>
-                    <div class="container">
-                        <div class="container is-fixed p-3 mt-3" ref={headRef}>
-                            <MemoriaTitle dataMemoria={data.value} onVoltar={() => voltar()} />
-                            <MemoriaTabs tab="revisar" />
-                        </div>
-                    </div>
-                </>
-            )}
+            <div class="container p-0 pr-3 pl-3" ref={bodyRef}>
+                Revisar
+            </div>
         </>
     )
 }

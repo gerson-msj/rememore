@@ -18,6 +18,7 @@ Organizador de memórias pessoais
 | 04/05 | 01:00 |        | Ajustes de scroll    |
 | 05/05 | 03:00 |  0.3   | Estrutura            |
 | 06/05 | 05:00 |        | Estrutura            |
+| 09/05 | 00:00 |        | Header               |
 
 ## Versionamento
 

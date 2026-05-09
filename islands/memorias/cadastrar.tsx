@@ -10,16 +10,17 @@ interface CadastrarProps {
     data: string
     memorias: Signal<Memoria[]>
     parentHeaderRef: RefObject<HTMLDivElement>
+    hasChanges: Signal<boolean>
+    isEdit: Signal<boolean>
 }
 
 export default function Cadastrar(props: CadastrarProps) {
-    const { data, parentHeaderRef } = props
+    const { data, parentHeaderRef, hasChanges, isEdit } = props
 
     const model = useSignal(new Memoria())
     const models = props.memorias
     const editIndex = useSignal<number | undefined>(undefined)
     const scrollInit = useSignal<number | undefined>(undefined)
-    const hasChange = useSignal(false)
 
     const memoriaRef = useRef<HTMLTextAreaElement>(null)
     const headerRef = useRef<HTMLDivElement>(null)
@@ -32,7 +33,6 @@ export default function Cadastrar(props: CadastrarProps) {
 
     const message = messageRef.current
     const memoriaRepository = memoriaRepositoryRef.current
-    const isEdit = editIndex.value !== undefined
 
     const salvar = async () => {
         const value: Memoria = { ...model.peek() }
@@ -41,7 +41,7 @@ export default function Cadastrar(props: CadastrarProps) {
         const values = [...models.peek()]
 
         try {
-            if (!isEdit) {
+            if (!isEdit.value) {
                 value.data = data
                 value.ordem = values.length === 0 ? 1 : Math.max(...values.map((v) => v.ordem)) + 1
                 const newValues = [...models.peek(), value]
@@ -58,11 +58,13 @@ export default function Cadastrar(props: CadastrarProps) {
                 ]
                 await memoriaRepository.add(data, newValues)
                 models.value = newValues
+
                 editIndex.value = undefined
+                isEdit.value = false
             }
 
             model.value = new Memoria()
-            hasChange.value = false
+            hasChanges.value = false
         } catch (error) {
             console.error("Erro ao salvar memória:", error)
             await message.open({ header: "Erro ao salvar a memória.", type: "is-danger" })
@@ -94,9 +96,12 @@ export default function Cadastrar(props: CadastrarProps) {
             await memoriaRepository.add(data, finalValues)
             models.value = finalValues
             model.value = new Memoria()
+
             editIndex.value = undefined
+            hasChanges.value = false
+            isEdit.value = false
+
             memoriaRef.current?.focus()
-            hasChange.value = false
         } catch (error) {
             console.error("Erro ao remover memória:", error)
             await message.open({ header: "Erro ao remover a memória.", type: "is-danger" })
@@ -104,16 +109,18 @@ export default function Cadastrar(props: CadastrarProps) {
     }
 
     const editar = (index: number) => {
+        hasChanges.value = false
+        isEdit.value = true
         editIndex.value = index
+
         scrollInit.value = globalThis.scrollY
         const selected = models.peek()[index]
         model.value = { ...selected }
         memoriaRef.current?.focus()
-        hasChange.value = false
     }
 
     const cancelarEditar = async () => {
-        if (hasChange.value) {
+        if (hasChanges.peek() === true) {
             const result = await message.open({
                 header: "Cancelar",
                 body: "Confirma o cancelamento das alterações realizadas?",
@@ -123,6 +130,9 @@ export default function Cadastrar(props: CadastrarProps) {
         }
 
         editIndex.value = undefined
+        isEdit.value = false
+        hasChanges.value = false
+
         model.value = new Memoria()
         models.value = await memoriaRepository.getAll(data)
         memoriaRef.current?.focus()
@@ -176,32 +186,7 @@ export default function Cadastrar(props: CadastrarProps) {
             ref.scrollIntoView({ block: "nearest", behavior: "smooth" })
         })
 
-        hasChange.value = true
-    }
-
-    const voltar = async () => {
-        if (hasChange.value) {
-            const result = await message.open({
-                header: "Voltar",
-                body: `Ao voltar, a ${isEdit ? "edição" : "inclusão"} em andamento será cancelada. \nDeseja voltar a página anterior?`,
-                buttons: "okCancel"
-            })
-            if (result === "cancel") return
-        }
-        globalThis.location.href = "/memorias"
-    }
-
-    const allowNavigate = async (): Promise<boolean> => {
-        if (hasChange.value) {
-            const act = isEdit ? "edição" : "inclusão"
-            const result = await message.open({
-                header: `Memória em ${act}`,
-                body: `Ao mudar de aba, a ${act} em andamento será cancelada. \nDeseja realizar a mudança de aba?`,
-                buttons: "okCancel"
-            })
-            return result === "ok"
-        }
-        return true
+        hasChanges.value = true
     }
 
     useEffect(() => {
@@ -214,33 +199,7 @@ export default function Cadastrar(props: CadastrarProps) {
             const bodyTop = parentHeaderRef.current.clientHeight + headerRef.current.clientHeight
             bodyRef.current.style.top = `${bodyTop + 3}px`
         }
-        // loadValues()
     }, [])
-
-    // const loadValues = async () => {
-    //     const memorias = props.memorias ?? []
-    //     try {
-    //         if (memorias.length === 0) {
-    //             models.value = await memoriaRepository.getAll(data.value)
-    //         } else {
-    //             const memoriasExistentes = await memoriaRepository.getAll(data.value)
-    //             if (memoriasExistentes.length > 0) {
-    //                 models.value = memoriasExistentes
-    //             } else {
-    //                 await memoriaRepository.add(data.value, memorias)
-    //                 models.value = memorias
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error("Erro ao carregar memórias:", error)
-    //         await message.open({
-    //             header: "Erro ao carregar as memórias.",
-    //             body: "Não foi possível manter as memórias neste navegador.",
-    //             type: "is-danger"
-    //         })
-    //         globalThis.location.href = "/memorias"
-    //     }
-    // }
 
     return (
         <>
@@ -250,7 +209,7 @@ export default function Cadastrar(props: CadastrarProps) {
                 <div class="field is-grouped is-align-items-end">
                     {/* Form */}
                     <div class="control is-expanded">
-                        <label class="label">{`${isEdit ? "Editar" : "Incluir"} Memória`}</label>
+                        <label class="label">{`${isEdit.value ? "Editar" : "Incluir"} Memória`}</label>
                         <div class="control">
                             <textarea
                                 class="textarea has-fixed-size"
@@ -258,8 +217,8 @@ export default function Cadastrar(props: CadastrarProps) {
                                 value={model.value.memoria}
                                 onInput={({ currentTarget: { value } }) => {
                                     model.value = { ...model.value, memoria: value }
-                                    if (!isEdit) {
-                                        hasChange.value = value.trim() !== ""
+                                    if (!isEdit.value) {
+                                        hasChanges.value = value.trim() !== ""
                                     }
                                 }}
                                 ref={memoriaRef}
@@ -267,7 +226,7 @@ export default function Cadastrar(props: CadastrarProps) {
                                     if (event.ctrlKey && event.key === "Enter") {
                                         salvar()
                                         event.preventDefault()
-                                    } else if (isEdit && event.key === "Escape") {
+                                    } else if (isEdit.value && event.key === "Escape") {
                                         cancelarEditar()
                                         event.preventDefault()
                                     }
@@ -284,13 +243,13 @@ export default function Cadastrar(props: CadastrarProps) {
                                 type="button"
                                 class="button"
                                 onClick={() => salvar()}
-                                title={`${isEdit ? "Salvar" : "Adicionar"}: CTRL+Enter`}
+                                title={`${isEdit.value ? "Salvar" : "Adicionar"}: CTRL+Enter`}
                             >
                                 <span class="icon is-small">
-                                    <i class={`fas ${isEdit ? "fa-save" : "fa-plus"}`}></i>
+                                    <i class={`fas ${isEdit.value ? "fa-save" : "fa-plus"}`}></i>
                                 </span>
                             </button>
-                            {isEdit && (
+                            {isEdit.value && (
                                 <>
                                     <button
                                         type="button"
@@ -315,7 +274,7 @@ export default function Cadastrar(props: CadastrarProps) {
                                 </>
                             )}
                         </div>
-                        {isEdit && (
+                        {isEdit.value && (
                             <>
                                 <div class="buttons has-addons is-justify-content-center">
                                     <button
@@ -397,7 +356,7 @@ export default function Cadastrar(props: CadastrarProps) {
                             <div
                                 ref={getEditRef(index)}
                                 class={`field is-grouped is-align-items-center notification p-2 is-dark ${
-                                    isEdit && editIndex.value === index ? "is-info is-dark" : ""
+                                    isEdit.value && editIndex.value === index ? "is-info is-dark" : ""
                                 }`}
                                 key={index}
                             >
@@ -409,7 +368,7 @@ export default function Cadastrar(props: CadastrarProps) {
                                     <button
                                         type="button"
                                         class="button"
-                                        disabled={isEdit}
+                                        disabled={isEdit.value}
                                         onClick={() => editar(index)}
                                     >
                                         <span class="icon is-small">

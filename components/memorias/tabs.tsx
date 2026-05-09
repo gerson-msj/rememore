@@ -4,7 +4,8 @@ export type MemoriaTab = "cadastrar" | "categorizar" | "revisar"
 
 interface IProps {
     tab: Signal<MemoriaTab>
-    allowNavigate?: () => Promise<boolean>
+    allowNavigate: () => Promise<boolean>
+    onNavigate: () => void
 }
 
 export default function MemoriaTabs(props: IProps) {
@@ -14,9 +15,10 @@ export default function MemoriaTabs(props: IProps) {
 
     const go = async (tab: MemoriaTab) => {
         if (tab !== props.tab.value) {
-            const allowNavigate = props.allowNavigate !== undefined ? await props.allowNavigate() : true
+            const allowNavigate = await props.allowNavigate()
 
             if (allowNavigate) {
+                props.onNavigate()
                 props.tab.value = tab
             }
         }

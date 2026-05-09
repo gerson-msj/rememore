@@ -1,6 +1,7 @@
 import { useSignal } from "@preact/signals"
 import { DateService } from "@/app/services/date-service.ts"
 import { useRef } from "preact/hooks"
+import MemoriaHeader from "@/components/memorias/header.tsx"
 
 export default function MemoriasHome() {
     const data = useSignal(DateService.dataLocal_ISOString())
@@ -13,29 +14,7 @@ export default function MemoriasHome() {
 
     return (
         <div class="container">
-            <div class="field is-grouped p-3">
-                <div class="control">
-                    <p class="title is-4">
-                        <span class="icon has-text-link is-loading">
-                            <i class="fas fa-cloud"></i>
-                        </span>
-                    </p>
-                </div>
-                <div class="control is-expanded">
-                    <p class="title is-4 has-text-link-light">Memórias</p>
-                </div>
-                <div class="control">
-                    <button
-                        type="button"
-                        class="button"
-                        title="Sair"
-                    >
-                        <span class="icon has-text-danger-dark-invert">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </span>
-                    </button>
-                </div>
-            </div>
+            <MemoriaHeader onSair={() => {}} />
 
             <div class="field is-grouped is-justify-content-center mt-5">
                 <div class="control">

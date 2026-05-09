@@ -1,5 +1,5 @@
 import { useSignal } from "@preact/signals"
-import MemoriaTitle from "@/components/memorias/title.tsx"
+import MemoriaHeader from "@/components/memorias/header.tsx"
 import MemoriaTabs, { MemoriaTab } from "@/components/memorias/tabs.tsx"
 import Cadastrar from "@/islands/memorias/cadastrar.tsx"
 import Categorizar from "@/islands/memorias/categorizar.tsx"
@@ -14,6 +14,9 @@ export default function Organizar() {
     const models = useSignal<Memoria[]>([])
     const tab = useSignal<MemoriaTab>("cadastrar")
 
+    const hasChanges = useSignal(false)
+    const isEdit = useSignal(false)
+
     const messageRef = useRef(new MessageController())
     const memoriaRepositoryRef = useRef(new MemoriaIDBRepository())
     const headerRef = useRef<HTMLDivElement>(null)
@@ -21,8 +24,36 @@ export default function Organizar() {
     const message = messageRef.current
     const memoriaRepository = memoriaRepositoryRef.current
 
-    const voltar = () => {
+    const voltar = async () => {
+        if (hasChanges.value || isEdit.value) {
+            const result = await message.open({
+                header: "Voltar",
+                body: `Ao voltar, a ${
+                    isEdit.value ? "edição" : "inclusão"
+                } em andamento será cancelada. \nDeseja voltar a página anterior?`,
+                buttons: "okCancel"
+            })
+            if (result === "cancel") return
+        }
         globalThis.location.href = "/memorias"
+    }
+
+    const allowNavigate = async () => {
+        if (hasChanges.value || isEdit.value) {
+            const act = isEdit ? "edição" : "inclusão"
+            const result = await message.open({
+                header: `Memória em ${act}`,
+                body: `Ao mudar de aba, a ${act} em andamento será cancelada. \nDeseja mudar de aba?`,
+                buttons: "okCancel"
+            })
+            return result === "ok"
+        }
+        return true
+    }
+
+    const onNavigate = () => {
+        isEdit.value = false
+        hasChanges.value = false
     }
 
     useEffect(() => {
@@ -61,43 +92,19 @@ export default function Organizar() {
 
     return (
         <>
-            {data.value === undefined && (
-                <>
-                    <div class="container">
-                        <div class="field is-grouped p-3">
-                            <div class="control">
-                                <p class="title is-4">
-                                    <span class="icon has-text-link">
-                                        <i class="fas fa-cloud"></i>
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="control is-expanded">
-                                <p class="title is-4 has-text-link-light">Memórias</p>
-                            </div>
-                            <div class="control">
-                                <button
-                                    type="button"
-                                    class="button is-loading"
-                                    title="Sair"
-                                >
-                                    <span class="icon">
-                                        <i class="fas fa-sign-out-alt"></i>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
+            {data.value === undefined && <MemoriaHeader isLoading />}
 
             {data.value !== undefined && (
                 <>
                     <div class="container">
                         {/* Header */}
                         <div class="container is-fixed" ref={headerRef}>
-                            <MemoriaTitle data={data.value} onVoltar={() => voltar()} />
-                            <MemoriaTabs tab={tab} />
+                            <MemoriaHeader data={data.value} onVoltar={() => voltar()} />
+                            <MemoriaTabs
+                                tab={tab}
+                                onNavigate={() => onNavigate()}
+                                allowNavigate={() => allowNavigate()}
+                            />
                         </div>
 
                         {tab.value === "cadastrar" && (
@@ -105,12 +112,26 @@ export default function Organizar() {
                                 data={data.value}
                                 memorias={models}
                                 parentHeaderRef={headerRef}
+                                hasChanges={hasChanges}
+                                isEdit={isEdit}
                             />
                         )}
 
-                        {tab.value === "categorizar" && <Categorizar />}
+                        {tab.value === "categorizar" && (
+                            <Categorizar
+                                data={data.value}
+                                memorias={models}
+                                parentHeaderRef={headerRef}
+                            />
+                        )}
 
-                        {tab.value === "revisar" && <Revisar />}
+                        {tab.value === "revisar" && (
+                            <Revisar
+                                data={data.value}
+                                memorias={models}
+                                parentHeaderRef={headerRef}
+                            />
+                        )}
                     </div>
                     <Message controller={messageRef.current} />
                 </>
