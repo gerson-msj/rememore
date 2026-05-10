@@ -2,13 +2,14 @@ import { useSignal } from "@preact/signals"
 import { DateService } from "@/app/services/date-service.ts"
 import { useRef } from "preact/hooks"
 import MemoriaHeader from "@/components/memorias/header.tsx"
+import { setStorageDate } from "@/app/services/memoria-page-service.ts"
 
 export default function MemoriasHome() {
     const data = useSignal(DateService.dataLocal_ISOString())
     const dtRef = useRef<HTMLInputElement>(null)
 
     const organizar = () => {
-        globalThis.localStorage.setItem("date", data.value)
+        setStorageDate(data.value)
         globalThis.location.href = "/memorias/organizar"
     }
 

@@ -372,7 +372,7 @@ export default function Cadastrar(props: CadastrarProps) {
                                         onClick={() => editar(index)}
                                     >
                                         <span class="icon is-small">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="fas fa-pencil-alt"></i>
                                         </span>
                                     </button>
                                 </div>

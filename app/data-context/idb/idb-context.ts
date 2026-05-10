@@ -1,7 +1,8 @@
 const idbName = "RememoreDB"
 
 const objectStoreNames = [
-    "memorias"
+    "memorias",
+    "categorias"
 ] as const
 
 export type IDBStoreName = typeof objectStoreNames[number]
@@ -26,7 +27,7 @@ export default class IDBContext {
         if (this._openPromise) return this._openPromise
 
         this._openPromise = new Promise<void>((resolve, reject) => {
-            const request = globalThis.indexedDB.open(idbName)
+            const request = globalThis.indexedDB.open(idbName, 1)
             request.onupgradeneeded = this.upgradeneeded
             request.onsuccess = () => {
                 this._db = request.result
@@ -70,18 +71,29 @@ export default class IDBContext {
             }
         }
 
-        for (const objectStoreName of objectStoreNames) {
-            if (!db.objectStoreNames.contains(objectStoreName)) {
-                db.createObjectStore(objectStoreName, { autoIncrement: false, keyPath: ["data", "ordem"] })
+        const createObjectStore = (
+            storeName: IDBStoreName,
+            options?: IDBObjectStoreParameters
+        ) => {
+            if (!db.objectStoreNames.contains(storeName)) {
+                db.createObjectStore(storeName, options)
             }
+        }
+
+        const memorias: IDBStoreName = "memorias"
+        const categorias: IDBStoreName = "categorias"
+
+        for (const objectStoreName of objectStoreNames) {
+            /** ObjectStores */
+            createObjectStore(memorias, { autoIncrement: false, keyPath: ["data", "ordem"] })
+            createObjectStore(categorias, { autoIncrement: false, keyPath: ["categoria"] })
+
             const transaction = this.transaction
             if (transaction === null) continue
             const objectStore = transaction.objectStore(objectStoreName)
 
-            /** Criar os indices das tabelas */
-            const memorias: IDBStoreName = "memorias"
+            /** Indexes */
             createIndex(objectStore, memorias, "data", "data", { unique: false })
-            createIndex(objectStore, memorias, "ordem", "ordem", { unique: false })
         }
     }
 }

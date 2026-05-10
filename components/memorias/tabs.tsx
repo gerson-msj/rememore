@@ -1,11 +1,10 @@
 import { Signal } from "@preact/signals"
-
-export type MemoriaTab = "cadastrar" | "categorizar" | "revisar"
+import { MemoryTab } from "@/app/services/memoria-page-service.ts"
 
 interface IProps {
-    tab: Signal<MemoriaTab>
+    tab: Signal<MemoryTab>
     allowNavigate: () => Promise<boolean>
-    onNavigate: () => void
+    onNavigate: (tab: MemoryTab) => void
 }
 
 export default function MemoriaTabs(props: IProps) {
@@ -13,12 +12,12 @@ export default function MemoriaTabs(props: IProps) {
     const isCategorizar = props.tab.value === "categorizar"
     const isRevisar = props.tab.value === "revisar"
 
-    const go = async (tab: MemoriaTab) => {
+    const go = async (tab: MemoryTab) => {
         if (tab !== props.tab.value) {
             const allowNavigate = await props.allowNavigate()
 
             if (allowNavigate) {
-                props.onNavigate()
+                props.onNavigate(tab)
                 props.tab.value = tab
             }
         }
