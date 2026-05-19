@@ -56,20 +56,46 @@ export default class CategoriaIDBRepository {
             transaction.onerror = () => reject(transaction.error)
             const request = store.getAll()
             request.onsuccess = () => {
-                resolve(request.result as Categoria[])
+                const categorias = (request.result as Categoria[])
+                    .sort((categoriaAtual, proximaCategoria) => {
+                        return categoriaAtual.categoria.localeCompare(proximaCategoria.categoria, "pt-BR")
+                    })
+
+                resolve(categorias)
             }
         })
     }
 
-    public async add(categoria: Categoria): Promise<void> {
+    public async find(categoria: string): Promise<Categoria | null> {
+        await this.open()
+        const transaction = this.context.getTransaction(this.storeName, "readonly")
+        const store = transaction.objectStore(this.storeName)
+
+        return new Promise((resolve, reject) => {
+            transaction.onerror = () => reject(transaction.error)
+
+            const request = store.get([categoria])
+            request.onsuccess = () => {
+                resolve((request.result as Categoria | undefined) ?? null)
+            }
+            request.onerror = () => reject(request.error)
+        })
+    }
+
+    public async add(categoria: Categoria): Promise<boolean> {
+        const categoriaExistente = await this.find(categoria.categoria)
+        if (categoriaExistente !== null) {
+            return false
+        }
+
         await this.open()
         const { transaction, store } = this.context.getTransactionStore(this.storeName)
 
         return new Promise((resolve, reject) => {
-            transaction.oncomplete = () => resolve()
+            transaction.oncomplete = () => resolve(true)
             transaction.onerror = () => reject(transaction.error)
 
-            store.put(categoria)
+            store.add(categoria)
         })
     }
 }

@@ -11,6 +11,7 @@ import MemoriaIDBRepository from "@/app/data-context/idb/memoria-idb-repository.
 import { getStorageDate, getStorageTab, MemoryTab, setStorageTab } from "@/app/services/memoria-page-service.ts"
 import CategoriaIDBRepository from "@/app/data-context/idb/categoria-idb-repository.ts"
 import { Categoria } from "@/app/domain/categoria.ts"
+import PesquisaCategoria from "@/components/pesquisa-categoria.tsx"
 
 export default function Organizar() {
     const data = useSignal<string | undefined>(undefined)
@@ -94,11 +95,7 @@ export default function Organizar() {
                  * Buscar categorias na API
                  * Armazenar as categorias da API localmente
                  */
-                categorias.value = [
-                    { id: 1, categoria: "Tarefas de casa" },
-                    { id: 2, categoria: "Leitura" },
-                    { id: 3, categoria: "Estudo" }
-                ]
+                categorias.value = await categoriaRepository.getAll()
             }
 
             const storageTab: MemoryTab = models.value.length === 0 ? "cadastrar" : getStorageTab() ?? "cadastrar"
@@ -147,6 +144,7 @@ export default function Organizar() {
                             <Categorizar
                                 data={data.value}
                                 memorias={models}
+                                categorias={categorias}
                                 parentHeaderRef={headerRef}
                             />
                         )}

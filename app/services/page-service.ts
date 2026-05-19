@@ -45,3 +45,10 @@ export function createDeferred<T>(): Deferred<T> {
 
     return { promise, resolve, reject }
 }
+
+export function normalize(str: string) {
+    return str
+        .normalize("NFD") // Decompõe acentos
+        .replace(/[\u0300-\u036f]/g, "") // Remove os diacríticos (acentos)
+        .toLowerCase() // Ignora Case
+}

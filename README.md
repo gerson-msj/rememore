@@ -4,23 +4,23 @@ Organizador de memórias pessoais
 
 ## Histórico
 
-| Data  | Horas | Versão | Atividade                           |
-| :---: | :---: | :----: | :---------------------------------- |
-| 28/04 | 01:00 |  0.0   | Criação do projeto                  |
-| 28/04 | 01:00 |  0.1   | Componente de data                  |
-| 29/04 | 01:00 |        | Listagem de memórias                |
-| 30/04 | 05:00 |        | Layout                              |
-| 01/05 | 02:00 |        | Layout                              |
-| 01/05 | 02:00 |        | Message Box                         |
-| 02/05 | 04:00 |        | Indexed DB                          |
-| 04/05 | 03:00 |  0.2   | Edição e ordenação                  |
-| 04/05 | 01:00 |        | Refinamento de UX                   |
-| 04/05 | 01:00 |        | Ajustes de scroll                   |
-| 05/05 | 03:00 |  0.3   | Estrutura                           |
-| 06/05 | 05:00 |        | Estrutura                           |
-| 09/05 | 02:00 |        | Header                              |
-| 10/05 | 01:00 |        | IdxDB Categorias                    |
-| --/-- | --:-- |        | Componente de seleção de categorias |
+| Data  | Horas | Versão | Atividade                                     |
+| :---: | :---: | :----: | :-------------------------------------------- |
+| 28/04 | 01:00 |  0.0   | Criação do projeto                            |
+| 28/04 | 01:00 |  0.1   | Componente de data                            |
+| 29/04 | 01:00 |        | Listagem de memórias                          |
+| 30/04 | 05:00 |        | Layout                                        |
+| 01/05 | 02:00 |        | Layout                                        |
+| 01/05 | 02:00 |        | Message Box                                   |
+| 02/05 | 04:00 |        | Indexed DB                                    |
+| 04/05 | 03:00 |  0.2   | Edição e ordenação                            |
+| 04/05 | 01:00 |        | Refinamento de UX                             |
+| 04/05 | 01:00 |        | Ajustes de scroll                             |
+| 05/05 | 03:00 |  0.3   | Estrutura                                     |
+| 06/05 | 05:00 |        | Estrutura                                     |
+| 09/05 | 02:00 |        | Header                                        |
+| 10/05 | 01:00 |        | IdxDB Categorias                              |
+| --/-- | --:-- |        | Componente de seleção de categorias (1h, ...) |
 
 ## Versionamento
 

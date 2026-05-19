@@ -12,6 +12,7 @@ export class Memoria implements IMemoria {
     data: string = ""
     ordem: number = 0
     memoria: string = ""
+    categoria?: Categoria
 }
 
 export class MemoriaData {

@@ -67,6 +67,13 @@ input[type="date"] {
     color: hsl(var(--bulma-link-h), var(--bulma-link-s), var(--bulma-link-80-l)) !important;
 }
 
+.menu-list.overflow {
+    overflow-y: auto;
+    height: 350px;
+
+    scrollbar-width: thin;
+}
+
 /* 
 :root {
     --header-height: 80px;
